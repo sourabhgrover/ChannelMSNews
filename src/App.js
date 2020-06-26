@@ -13,6 +13,9 @@ import newsApi from "./apis/newsApi";
 import Weather from "./components/defaultWeather";
 import News from "./components/News";
 import Regions from "./components/Region";
+import PrivateRoute from "./routes/PrivateRoute";
+import Login from "./components/Login";
+
 
 import "bulma/css/bulma.css";
 
@@ -27,7 +30,7 @@ export default class App extends Component {
     isLoading: true
   };
 
-  
+
   componentDidMount = () => {
     this.getfrmnewsAPI(this.state.selectedCategory);
   };
@@ -36,23 +39,23 @@ export default class App extends Component {
 
   getfrmnewsAPI = (categoryName) => {
     let reqURL = "";
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
     switch (categoryName) {
       case "BreakingNews":
         reqURL = `latest-news?country=${this.state.selectedRegion}&apiKey=${process.env.REACT_APP_CURRENTS_API_KEY}`;
-      break;
+        break;
 
       case "business":
       case "sports":
       case "technology":
-      case "science":  
+      case "science":
       case "health":
         reqURL = `latest-news?country=${this.state.selectedRegion}&category=${categoryName}&apiKey=${process.env.REACT_APP_CURRENTS_API_KEY}`
-      break;
+        break;
 
       case "movies":
         reqURL = `search?country=${this.state.selectedRegion}&keywords=${categoryName}&apiKey=${process.env.REACT_APP_CURRENTS_API_KEY}`;
-      break;
+        break;
 
       default:
         reqURL = `search?country=${this.state.selectedRegion}&keywords=${categoryName}&apiKey=${process.env.REACT_APP_CURRENTS_API_KEY}`;
@@ -62,8 +65,8 @@ export default class App extends Component {
       .get(reqURL)
       .then((response) => {
         if (response.status === 200) {
-          this.setState({ news: response.data.news, isLoading: false});
-  
+          this.setState({ news: response.data.news, isLoading: false });
+
         }
       })
       .catch((error) => console.log(error));
@@ -72,7 +75,7 @@ export default class App extends Component {
   getdatabyCategory = (e) => {
     e.preventDefault();
     let categoryName = e.target.getAttribute("href");
-    this.setState({selectedCategory:categoryName }, () => {
+    this.setState({ selectedCategory: categoryName }, () => {
       this.getfrmnewsAPI(categoryName);
     })
   };
@@ -85,7 +88,7 @@ export default class App extends Component {
     // this.setState ({selectedRegion: selRegion })
     let categoryName = this.props;
     console.log(categoryName)
-    this.setState({selectedRegion: selRegion}, () => {
+    this.setState({ selectedRegion: selRegion }, () => {
       this.getfrmnewsAPI(this.state.selectedCategory);
     });
   }
@@ -102,8 +105,8 @@ export default class App extends Component {
             <div>
               <span className="short-app-name">CHANNEL MS NEWS</span>
             </div>
-            <div className ="region">
-              <Regions  userRegion = {this.userRegion}/>
+            <div className="region">
+              <Regions userRegion={this.userRegion} />
             </div>
             <div className="weather">
               <Weather />
@@ -120,13 +123,14 @@ export default class App extends Component {
         <Search onSearchSubmit={this.userSearch} />
         <Switch>
           <Route exact path="/">
-            <News news={this.state.news} isLoading = {this.state.isLoading} />
+            <News news={this.state.news} isLoading={this.state.isLoading} />
           </Route>
           <Route
             path="/category/:CategoryName"
             render={(props) => <Category {...props} selectedRegion={this.state.selectedRegion} />}
           />
-          <Route path="/myaccount" component={MyAccount} />
+          <Route path="/login" component={Login} />
+          <PrivateRoute path="/myaccount" component={MyAccount} />
         </Switch>
         <div>
           <SideMenu newsCategory={this.getdatabyCategory} />
