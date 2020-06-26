@@ -15,6 +15,7 @@ import News from "./components/News";
 import Regions from "./components/Region";
 import PrivateRoute from "./routes/PrivateRoute";
 import Login from "./components/Login";
+import Signup from "./components/Signup";
 
 
 import "bulma/css/bulma.css";
@@ -130,6 +131,7 @@ export default class App extends Component {
             render={(props) => <Category {...props} selectedRegion={this.state.selectedRegion} />}
           />
           <Route path="/login" component={Login} />
+          <Route path="/signup" component={Signup} />
           <PrivateRoute path="/myaccount" component={MyAccount} />
         </Switch>
         <div>
